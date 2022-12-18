@@ -4,12 +4,10 @@ import cat.tecnocampus.apollofy.application.GenreController;
 import cat.tecnocampus.apollofy.application.LikesController;
 import cat.tecnocampus.apollofy.application.TrackController;
 import cat.tecnocampus.apollofy.application.UserPlayListController;
+import cat.tecnocampus.apollofy.application.dto.PlaylistTrackDTO;
 import cat.tecnocampus.apollofy.application.dto.PopularGenre;
 import cat.tecnocampus.apollofy.application.dto.PopularTrack;
-import cat.tecnocampus.apollofy.domain.Genre;
-import cat.tecnocampus.apollofy.domain.Playlist;
-import cat.tecnocampus.apollofy.domain.Track;
-import cat.tecnocampus.apollofy.domain.UserFy;
+import cat.tecnocampus.apollofy.domain.*;
 import org.springframework.data.domain.Slice;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -125,6 +123,18 @@ public class ApollofyRestController {
     @PutMapping("/playLists/{id}/tracks")
     public void addTracksToPlayList(@PathVariable Long id, @RequestBody List<Long> trackIds) {
         userPlayListController.addTracksToPlayList(id, trackIds);
+    }
+
+    //https://developer.spotify.com/documentation/web-api/reference/#/operations/add-tracks-to-playlist
+    // POST method as it is done in Spotify official API. Discuss and review if necessary.
+    @PostMapping("/playlist/{id}/tracks")
+    public void addTracksToPlayListWithTimeRange(Principal principal, @PathVariable Long id, @RequestBody List<PlaylistTrackDTO> tracks) {
+        userPlayListController.addTracksToPlayListWithTimeRange(principal.getName(), id, tracks);
+    }
+
+    @GetMapping("/playlist/{playlistId}/tracks")
+    public List<PlaylistTrack> getTracksToPlayListWithTimeRange(@PathVariable Long playlistId) {
+        return userPlayListController.getTracksByPlaylistId(playlistId);
     }
 
     @PutMapping("/me/likedTracks/{id}")

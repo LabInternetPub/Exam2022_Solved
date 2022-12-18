@@ -13,7 +13,7 @@ insert into genre (name) values ('New Age');
 insert into track (title, duration_seconds) values ('La lluna la pruna', 45);
 insert into track (title, duration_seconds) values ('El Joan Petit quan balla', 80);
 insert into track (title, duration_seconds) values ('Back in black', 80);
-insert into track (title, duration_seconds) values ('Sounds of silence', 180);
+insert into track (title, duration_seconds) values ('Sound of silence', 180);
 insert into track (title, duration_seconds) values ('Vuela con el viento', 70);
 insert into track (title, duration_seconds) values ('Lovesong from the mountains', 150);
 

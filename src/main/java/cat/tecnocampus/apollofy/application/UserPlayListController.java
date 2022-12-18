@@ -1,17 +1,17 @@
 package cat.tecnocampus.apollofy.application;
 
+import cat.tecnocampus.apollofy.application.dto.PlaylistTrackDTO;
 import cat.tecnocampus.apollofy.application.exceptions.ElementNotFoundInBBDD;
 import cat.tecnocampus.apollofy.domain.Playlist;
+import cat.tecnocampus.apollofy.domain.PlaylistTrack;
 import cat.tecnocampus.apollofy.domain.Track;
 import cat.tecnocampus.apollofy.domain.UserFy;
-import cat.tecnocampus.apollofy.persistence.LikeTrackRepository;
-import cat.tecnocampus.apollofy.persistence.PlayListRepository;
-import cat.tecnocampus.apollofy.persistence.TrackRepository;
-import cat.tecnocampus.apollofy.persistence.UserRepository;
+import cat.tecnocampus.apollofy.persistence.*;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,13 +22,16 @@ public class UserPlayListController {
     private final PlayListRepository playListRepository;
     private final LikeTrackRepository likeTrackRepository;
 
+    private final PlayListTrackRepository playListTrackRepository;
+
     public UserPlayListController(TrackRepository trackRepository,
                                   UserRepository userRepository, PlayListRepository playListRepository,
-                                  LikeTrackRepository likeTrackRepository) {
+                                  LikeTrackRepository likeTrackRepository, PlayListTrackRepository playListTrackRepository) {
         this.trackRepository = trackRepository;
         this.userRepository = userRepository;
         this.playListRepository = playListRepository;
         this.likeTrackRepository = likeTrackRepository;
+        this.playListTrackRepository = playListTrackRepository;
     }
 
 
@@ -72,4 +75,48 @@ public class UserPlayListController {
         return playListRepository.findUserPlayLists(email);
     }
 
+
+    @Transactional
+    public void addTracksToPlayListWithTimeRange(String email, Long playListId, List<PlaylistTrackDTO> tracksDTO) {
+        Playlist playlistDB = playListRepository.findById(playListId).orElseThrow(() -> new RuntimeException("Play list doesn't exist"));
+        UserFy user = userRepository.findByEmail(email).orElseThrow(() -> new ElementNotFoundInBBDD("User " + email));
+
+        if(!playlistDB.getOwner().equals(user)) {
+            throw new RuntimeException("You are not the playlist owner.");
+        }
+
+        for (PlaylistTrackDTO playlistTrackDTO : tracksDTO) {
+            Track trackDB = trackRepository
+                    .findById(playlistTrackDTO.trackId())
+                    .orElseThrow(() -> new ElementNotFoundInBBDD("Track with id " + playlistTrackDTO.trackId()));
+
+
+            addTrackToPlaylist(playlistDB, playlistTrackDTO, trackDB);
+
+        }
+
+    }
+
+    private void addTrackToPlaylist(Playlist playlistDB, PlaylistTrackDTO playlistTrackDTO, Track trackDB) {
+        Optional<PlaylistTrack> playlistTrackOptional = playListTrackRepository.findByTrackAndPlaylist(trackDB, playlistDB);
+
+        if (playlistTrackOptional.isPresent()) {
+            PlaylistTrack playlistTrack = playlistTrackOptional.get();
+
+            playlistTrack.setStartTimeMillis(playlistTrackDTO.startTimeMillis());
+            playlistTrack.setEndTimeMillis(playlistTrackDTO.endTimeMillis());
+
+        } else {
+
+            PlaylistTrack playlistTrack = new PlaylistTrack(playlistTrackDTO.startTimeMillis(),
+                    playlistTrackDTO.endTimeMillis(),
+                    trackDB,
+                    playlistDB);
+            playListTrackRepository.save(playlistTrack);
+        }
+    }
+
+    public List<PlaylistTrack> getTracksByPlaylistId(Long playlistId) {
+        return playListTrackRepository.findByPlaylistId(playlistId);
+    }
 }
