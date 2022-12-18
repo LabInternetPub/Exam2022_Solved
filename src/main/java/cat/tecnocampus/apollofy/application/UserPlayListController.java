@@ -1,7 +1,7 @@
 package cat.tecnocampus.apollofy.application;
 
 import cat.tecnocampus.apollofy.application.exceptions.ElementNotFoundInBBDD;
-import cat.tecnocampus.apollofy.domain.PlayList;
+import cat.tecnocampus.apollofy.domain.Playlist;
 import cat.tecnocampus.apollofy.domain.Track;
 import cat.tecnocampus.apollofy.domain.UserFy;
 import cat.tecnocampus.apollofy.persistence.LikeTrackRepository;
@@ -36,16 +36,16 @@ public class UserPlayListController {
         return userRepository.findAll();
     }
 
-    public List<PlayList> getPlayLists() {
+    public List<Playlist> getPlayLists() {
         return playListRepository.findAll();
     }
 
-    public PlayList getPlayListById(Long id) {
+    public Playlist getPlayListById(Long id) {
         return playListRepository.findById(id).orElseThrow(() -> new ElementNotFoundInBBDD("PlayList with id " + id));
     }
 
     @Transactional
-    public void createPlayList(PlayList playList, String ownerEmail) {
+    public void createPlayList(Playlist playList, String ownerEmail) {
         UserFy user = userRepository.findByEmail(ownerEmail).orElseThrow(() -> new ElementNotFoundInBBDD("User " + ownerEmail));
         playList.setOwner(user);
 
@@ -53,22 +53,22 @@ public class UserPlayListController {
         playListRepository.save(playList);
     }
 
-    private Set<Track> getPlayListTracksFromDB(PlayList playList) {
+    private Set<Track> getPlayListTracksFromDB(Playlist playList) {
         return playList.getTracks().stream().map(t -> trackRepository.findById(t.getId()).orElseThrow(() -> new ElementNotFoundInBBDD("Track with id " + t.getId())))
                 .collect(Collectors.toSet());
     }
 
     @Transactional
     public void addTracksToPlayList(Long playListId, List<Long> tracksId) {
-        PlayList playListDB = playListRepository.findById(playListId).orElseThrow(() -> new RuntimeException("Play list doesn't exist"));
-        tracksId.stream().map(tid -> trackRepository.findById(tid).orElseThrow(() -> new ElementNotFoundInBBDD("Track with id " + tid))).forEach(t -> playListDB.addTrack(t));
+        Playlist playlistDB = playListRepository.findById(playListId).orElseThrow(() -> new RuntimeException("Play list doesn't exist"));
+        tracksId.stream().map(tid -> trackRepository.findById(tid).orElseThrow(() -> new ElementNotFoundInBBDD("Track with id " + tid))).forEach(t -> playlistDB.addTrack(t));
     }
 
     public UserFy getMe(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> new ElementNotFoundInBBDD("User " + email));
     }
 
-    public List<PlayList> getUserPlayLists(String email) {
+    public List<Playlist> getUserPlayLists(String email) {
         return playListRepository.findUserPlayLists(email);
     }
 

@@ -7,7 +7,7 @@ import cat.tecnocampus.apollofy.application.UserPlayListController;
 import cat.tecnocampus.apollofy.application.dto.PopularGenre;
 import cat.tecnocampus.apollofy.application.dto.PopularTrack;
 import cat.tecnocampus.apollofy.domain.Genre;
-import cat.tecnocampus.apollofy.domain.PlayList;
+import cat.tecnocampus.apollofy.domain.Playlist;
 import cat.tecnocampus.apollofy.domain.Track;
 import cat.tecnocampus.apollofy.domain.UserFy;
 import org.springframework.data.domain.Slice;
@@ -98,22 +98,22 @@ public class ApollofyRestController {
     }
 
     @GetMapping("/me/playLists")
-    public List<PlayList> getUserPlayLists(Principal principal) {
+    public List<Playlist> getUserPlayLists(Principal principal) {
         return userPlayListController.getUserPlayLists(principal.getName());
     }
 
     @GetMapping("/playLists")
-    public List<PlayList> getPlayLists() {
+    public List<Playlist> getPlayLists() {
         return userPlayListController.getPlayLists();
     }
 
     @GetMapping("/playLists/{id}")
-    public PlayList getPlayList(@PathVariable Long id) {
+    public Playlist getPlayList(@PathVariable Long id) {
         return userPlayListController.getPlayListById(id);
     }
 
     @PostMapping("/me/playLists")
-    public void postPlayLists(@RequestBody PlayList playList, Principal principal) {
+    public void postPlayLists(@RequestBody Playlist playList, Principal principal) {
         userPlayListController.createPlayList(playList, principal.getName());
     }
 
