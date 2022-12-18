@@ -1,0 +1,10 @@
+
+###
+GET http://localhost:8080/api/genres?size=100
+
+###
+DELETE http://localhost:8080/api/genres/8
+
+###
+GET localhost:8080/api/top/genres?size=3
+
