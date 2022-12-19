@@ -125,8 +125,24 @@ public class ApollofyRestController {
         userPlayListController.addTracksToPlayList(id, trackIds);
     }
 
-    //https://developer.spotify.com/documentation/web-api/reference/#/operations/add-tracks-to-playlist
-    // POST method as it is done in Spotify official API. Discuss and review if necessary.
+    /* TODO x.0
+    Implement RestController method that handles @PostMapping("/playlist/{id}/tracks") API calls to register new track
+    associations with the playlist specified as parameter.
+
+    The method receives: Principal principal, Long id, List<PlaylistTrackDTO> tracks, where:
+
+    Each PlaylistTrackDTO contains the following attributes: Long trackId, Long startTimeMillis, Long endTimeMillis
+
+    This method is in charge of receiving the information from the HTTP request and delegating it to a method of the
+    UserPlayListController Service. The service method may be named userPlayListController.addTracksToPlayListWithTimeRange
+
+    This API call is inspired by the official Spotify documentation.  The Lab Internet teaching team has added the specific
+    functionality to indicate that we want to add just a part of the track to the Playlist.
+
+    https://developer.spotify.com/documentation/web-api/reference/#/operations/add-tracks-to-playlist
+    POST method as it is done in Spotify official API.
+    */
+
     @PostMapping("/playlist/{id}/tracks")
     public void addTracksToPlayListWithTimeRange(Principal principal, @PathVariable Long id, @RequestBody List<PlaylistTrackDTO> tracks) {
         userPlayListController.addTracksToPlayListWithTimeRange(principal.getName(), id, tracks);

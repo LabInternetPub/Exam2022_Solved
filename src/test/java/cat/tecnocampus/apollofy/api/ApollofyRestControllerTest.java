@@ -101,7 +101,7 @@ public class ApollofyRestControllerTest {
         /*
         Check that the API get("/api/playlist/1/tracks") returns the same "playlistTrack" that we have associated with the playlist
         by means of the current JUnit test. To implement the test, the information of the DTO that we have passed in the body of the
-        POST request post("/api/playlist/1/tracks" is compared with the information returned by the API: get("/api/playlist/1/tracks")
+        POST request post("/api/playlist/1/tracks") is compared with the information returned by the API: get("/api/playlist/1/tracks")
 
         For simplicity, it has not been specified as a requirement that the Playlist tracks must be in order.
         That is why the verification code is a little more complex.
