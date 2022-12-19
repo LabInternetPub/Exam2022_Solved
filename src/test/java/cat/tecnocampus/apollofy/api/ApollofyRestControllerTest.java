@@ -68,6 +68,7 @@ public class ApollofyRestControllerTest {
     }
 
     @Test
+    // Simulate that we are executing the test being the user "mperez@tecnocampus.cat". It's a nice feature. Isn't it? :)
     @WithMockUser("mperez@tecnocampus.cat")
     void addTracksToPlayListWithTimeRange() throws Exception {
 
@@ -75,7 +76,7 @@ public class ApollofyRestControllerTest {
         final PlaylistTrackDTO track1 = new PlaylistTrackDTO(1L, 3000L, 4000L);
         final PlaylistTrackDTO track2 = new PlaylistTrackDTO(2L, 2302L, 6789L);
 
-        List<PlaylistTrackDTO> playlistTrackDTOList = Arrays.asList(new PlaylistTrackDTO[] { track1, track2});
+        List<PlaylistTrackDTO> playlistTrackDTOList = Arrays.asList(new PlaylistTrackDTO[]{track1, track2});
 
         // TODO: PlaylistTrack start must be lower than end.
 
@@ -83,24 +84,35 @@ public class ApollofyRestControllerTest {
         String body = objectMapper.writeValueAsString(playlistTrackDTOList);
 
         mockMvc.perform(post("/api/playlist/1/tracks")
-                .content(body)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(body)
+                        .contentType(MediaType.APPLICATION_JSON))
                 //.andExpect(status().isCreated()) It should be 201 Created as Spotify official API doc, but we use 200
                 .andExpect(status().isOk())
                 .andReturn();
 
-        // Get PlaylistTracks to ensure that the tracks have been added correctly in the previous API call
+        // Get PlaylistTracks to ensure that the tracks have been added correctly in the previous POST API call:
+        // post("/api/playlist/1/tracks")
         MvcResult result = mockMvc.perform(get("/api/playlist/1/tracks")).andExpect(status().isOk()).andReturn();
 
         // Convert HTTP response body from JSON to Java
-        List<PlaylistTrack> playlistTracks = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {});
+        List<PlaylistTrack> playlistTracks = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+        });
 
+        /*
+        Check that the API get("/api/playlist/1/tracks") returns the same "playlistTrack" that we have associated with the playlist
+        by means of the current JUnit test. To implement the test, the information of the DTO that we have passed in the body of the
+        POST request post("/api/playlist/1/tracks" is compared with the information returned by the API: get("/api/playlist/1/tracks")
+
+        For simplicity, it has not been specified as a requirement that the Playlist tracks must be in order.
+        That is why the verification code is a little more complex.
+
+         */
         assertTrue(playlistTracks.stream().anyMatch(playlistTrack -> playlistTrackEqualsDTO(playlistTrack, track1)));
         assertTrue(playlistTracks.stream().anyMatch(playlistTrack -> playlistTrackEqualsDTO(playlistTrack, track2)));
     }
 
     private static boolean playlistTrackEqualsDTO(PlaylistTrack playlistTrack, PlaylistTrackDTO trackToCheck) {
-        return  playlistTrack.getTrack().getId().equals(trackToCheck.trackId()) &&
+        return playlistTrack.getTrack().getId().equals(trackToCheck.trackId()) &&
                 playlistTrack.getStartTimeMillis().equals(trackToCheck.startTimeMillis()) &&
                 playlistTrack.getEndTimeMillis().equals(trackToCheck.endTimeMillis());
     }
