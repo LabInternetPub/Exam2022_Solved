@@ -80,7 +80,7 @@ public class ApollofyRestControllerTest {
 
         // TODO: PlaylistTrack start must be lower than end.
 
-        // Convert DTO to JSON.
+        // Convert Java DTO to JSON.
         String body = objectMapper.writeValueAsString(playlistTrackDTOList);
 
         mockMvc.perform(post("/api/playlist/1/tracks")

@@ -9,6 +9,10 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
+/* TODO x.4
+   Implement a JpaRepository named PlayListTrackRepository that provides the queries required by
+   the UserPlayListController service.
+ */
 public interface PlayListTrackRepository extends JpaRepository<PlaylistTrack, Long> {
     Optional<PlaylistTrack> findByTrackAndPlaylist(Track track, Playlist playlist);
 
