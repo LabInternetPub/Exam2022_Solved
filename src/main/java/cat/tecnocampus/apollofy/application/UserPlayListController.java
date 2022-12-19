@@ -116,6 +116,14 @@ public class UserPlayListController {
         }
     }
 
+    /* TODO x.2
+
+    List<PlaylistTrack> getTracksByPlaylistId(Long playlistId)
+
+    This method is a service wrapper that just invokes the corresponding JpaRepository query to get the results,
+    to promote decoupling between the RestController and the JpaRepository.
+
+     */
     public List<PlaylistTrack> getTracksByPlaylistId(Long playlistId) {
         return playListTrackRepository.findByPlaylistId(playlistId);
     }
