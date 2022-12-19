@@ -65,7 +65,6 @@ public class ApollofyRestControllerTest {
         assertEquals(userFy.getEmail(), "jalvarez@tecnocampus.cat");
         assertEquals(userFy.getName(), "Josep");
         assertEquals(userFy.getSecondName(), "Alvarez");
-        assertNotEquals(userFy.getSecondName(), "Alcobe");
     }
 
     @Test
