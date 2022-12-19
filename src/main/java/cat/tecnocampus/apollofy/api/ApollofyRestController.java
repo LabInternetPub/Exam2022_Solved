@@ -145,7 +145,7 @@ public class ApollofyRestController {
 
     @PostMapping("/playlist/{id}/tracks")
     public void addTracksToPlayListWithTimeRange(Principal principal, @PathVariable Long id, @RequestBody List<PlaylistTrackDTO> tracks) {
-        userPlayListController.addTracksToPlayListWithTimeRange(principal.getName(), id, tracks);
+        userPlayListController.addTracksToPlaylistWithTimeRange(principal.getName(), id, tracks);
     }
 
     /* TODO x.1
