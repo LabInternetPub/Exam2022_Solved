@@ -148,6 +148,17 @@ public class ApollofyRestController {
         userPlayListController.addTracksToPlayListWithTimeRange(principal.getName(), id, tracks);
     }
 
+    /* TODO x.1
+    Implement RestController method that handles @GetMapping("/playlist/{playlistId}/tracks") API calls.
+
+    This API provides the functionality to get all the associations of tracks with a playlist specified as parameter.
+
+    The method has to return List<PlaylistTrack> as expected in the JUnit test.
+
+    This method delegates to userPlayListController.getTracksByPlaylistId(playlistId),
+    which, in turn, calls the corresponding JpaRepository query to get the results.
+
+     */
     @GetMapping("/playlist/{playlistId}/tracks")
     public List<PlaylistTrack> getTracksToPlayListWithTimeRange(@PathVariable Long playlistId) {
         return userPlayListController.getTracksByPlaylistId(playlistId);
