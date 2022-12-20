@@ -5,6 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 import java.util.Set;
 
+/*
+TODO 4.0
+    This is the DJList. As you see, it doesn't point to any track or track fragment. (And it doesn't need to)
+    Actually, you don't need to modify this class
+ */
 @Entity(name = "dj_list")
 public class DJList {
 

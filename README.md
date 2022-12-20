@@ -23,8 +23,8 @@ In /test/java/cat/tecnocampus/apollofy/api, there is a suit of tests that should
 ## Questions
 ### Question 1 
 When a track is created, its title must begin with a capital letter and its durations must be higher or equal to 5 and lower or equal to 300
-    * When the parameters are valid the response status must be 200 and the body empty
-    * When the parameters are invalid the response status must be 400 and the body must be similar to
+* When the parameters are valid the response status must be 200 and the body empty
+* When the parameters are invalid the response status must be 400 and the body must be similar to
   ```
   {
   "violations": [
@@ -47,23 +47,21 @@ When a track is created, its title must begin with a capital letter and its dura
   that require a logged-in user won't work if nobody is.  
   You can observe (in the data.sql file) that we have three roles. Namely, ROLE_FREE, ROLE_PREMIUM and ROLE_PROFESSIONAL. You should modify
   the security configuration so that:
-    * Only registered users can call entries with the "me" word in the path
-    * Everybody, even unregistered users, can list tracks "GET /api/tracks"
-    * ROLE_FREE users can only: list their own information "GET /api/me", list their authored tracks "GET /api/me/tracks" and list a given track
-      "GET /api/tracks/{id}"
-    * ROLE_PREMIUM users additionally can: create tracks "POST /api/tracks", add artists to tracks "PUT api/tracks/{trackId}/artists",  
-      add genres to tracks "PUT api/tracks/{trackId}/genres", like tracks PUT "api/me/likedTracks/{trackId}" and list their liked tracks
-      GET "api/me/likedTracks"
-    * ROLE_PROFESSIONAL users additionally can: create, list and modify Playlists "api/me/playlists", list all users "GET /api/users" and get
-      the top tracks and genres "GET /api/top/genres" "GET /api/top/tracks"
+* Only registered users can call entries with the "me" word in the path
+* Everybody, even unregistered users, can list tracks "GET /api/tracks"
+* ROLE_FREE users can only: list their own information "GET /api/me", list their authored tracks "GET /api/me/tracks" and list a given track
+  "GET /api/tracks/{id}"
+* ROLE_PREMIUM users additionally can: create tracks "POST /api/tracks", add artists to tracks "PUT api/tracks/{trackId}/artists",  
+  add genres to tracks "PUT api/tracks/{trackId}/genres", like tracks PUT "api/me/likedTracks/{trackId}" and list their liked tracks
+  GET "api/me/likedTracks"
+* ROLE_PROFESSIONAL users additionally can: create, list and modify Playlists "api/me/playlists", list all users "GET /api/users" and get
+  the top tracks and genres "GET /api/top/genres" "GET /api/top/tracks"
 
 ## Question 3
 When looking for a non-existing element in the database an exception of type ElementNotFoundInBBDD is signaled. In this
   case the response status must be 404 and the body empty
 
-## Question 4 Add a selection of users - owned tracks with a projection using interface DTO ??? (hi ha temps????)
-
-## Question 5
+## Question 4
 Our platform, Apollofy, is getting noticed and used among disc-jockeys (also known as DJ) and they would like to have lists of fragments of tracks.
 That is, the lists not only need to contain tracks but also the moment in which they should begin and end when played in the disco or musical bar.
 
@@ -79,6 +77,9 @@ For this exercise you should implement a REST method that handles @PostMapping("
 fragments associations with the DJList specified as parameter. We assume that the DJList already exists in the database 
 (actually there is already one as you can see in the data.sql file, owned by user jalcobe@tecnocampus.cat).
 
+Now read the TODOs 4.x they will gide you through the exercise.
+
+## Question 5 Add a selection of users - owned tracks with a projection using interface DTO ??? (hi ha temps????)
 
 
 
