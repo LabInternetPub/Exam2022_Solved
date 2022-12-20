@@ -24,9 +24,9 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -78,8 +78,6 @@ public class ApollofyRestControllerTest {
         final DJListTrackDTO track2 = new DJListTrackDTO(2L, 2302L, 6789L);
 
         List<DJListTrackDTO> DJListTrackDTOList = Arrays.asList(new DJListTrackDTO[]{track1, track2});
-
-        // TODO: PlaylistTrack start must be lower than end.
 
         // Convert Java DTO to JSON.
         String body = objectMapper.writeValueAsString(DJListTrackDTOList);

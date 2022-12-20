@@ -21,6 +21,8 @@ The domain of the exercise is already known for you since we sent you the code, 
 In /test/java/cat/tecnocampus/apollofy/api, there is a suit of tests that should pass when all the questions are answered correctly
 
 ## Questions
+2 points each.
+However, if you solve correctly question 4, you'll get an extra point (yes, 3 out of 2!)
 ### Question 1 
 When a track is created, its title must begin with a capital letter and its durations must be higher or equal to 5 and lower or equal to 300
 * When the parameters are valid the response status must be 200 and the body empty
@@ -59,7 +61,8 @@ When a track is created, its title must begin with a capital letter and its dura
 
 ## Question 3
 When looking for a non-existing element in the database an exception of type ElementNotFoundInBBDD is signaled. In this
-  case the response status must be 404 and the body empty
+  case the response status must be 404 and the body empty.
+(No TODOs for this exercise.)
 
 ## Question 4
 Our platform, Apollofy, is getting noticed and used among disc-jockeys (also known as DJ) and they would like to have lists of fragments of tracks.
@@ -77,9 +80,18 @@ For this exercise you should implement a REST method that handles @PostMapping("
 fragments associations with the DJList specified as parameter. We assume that the DJList already exists in the database 
 (actually there is already one as you can see in the data.sql file, owned by user jalcobe@tecnocampus.cat).
 
-Now read the TODOs 4.x they will gide you through the exercise.
+Now read the TODOs 4.x. They will gide you through the exercise.
 
-## Question 5 Add a selection of users - owned tracks with a projection using interface DTO ??? (hi ha temps????)
+## Question 5 
+We would like to have a new entrypoint in our REST API that list only the **id, title and duration** of all tracks in our system. 
+You can add the entry GET /api/tracksCore to get the required track information.
+Note that you need to
+1. Create a DTO with the three required fields of tracks
+2. Add a new method to the TrackRepository that returns an object of the DTO created in point 1. Recall that you if the column names of the
+selection matches the filed names of the DTO live is easier.
+3. Add a new method to the TrackController that calls the method in the TrackRepository
+5. Add the entry point to the ApollofyRestController that calls the method in the TrackController
+
 
 
 

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+//TODO 1.0 Somewhere in this class you need to add some annotations to validate the title and the duration
 @Entity
 public class Track {
 

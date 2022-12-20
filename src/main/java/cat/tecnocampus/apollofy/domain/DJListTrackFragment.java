@@ -7,7 +7,7 @@ import java.util.Objects;
 /*
 TODO 4.1 This class represents the association between the DJList and tracks. It carries the beginning and end
     of the track fragment associated to the DJList.
-    See that it poits to a track and a DJlist
+    See that it points to a track and a DJlist
     You need to add all the necessary JPA annotations
  */
 @Entity

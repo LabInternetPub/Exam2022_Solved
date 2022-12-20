@@ -18,6 +18,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
+//TODO 1.2 somewhere here you need to add annotations to validate tracks
+
+//TODO 1.3 you also need to add some classes to handle validation errors (you can find them in the Tinder example, among other places)
 @RestController
 @RequestMapping("/api/")
 public class ApollofyRestController {
