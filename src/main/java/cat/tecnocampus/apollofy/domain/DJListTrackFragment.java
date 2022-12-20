@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
-public class PlaylistTrack {
+public class DJListTrackFragment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,16 +20,16 @@ public class PlaylistTrack {
 
     @ManyToOne(optional = false)
     @NotNull
-    private Playlist playlist;
+    private DJList djList;
 
-    public PlaylistTrack() {
+    public DJListTrackFragment() {
     }
 
-    public PlaylistTrack(Long startTimeMillis, Long endTimeMillis, Track track, Playlist playlist) {
+    public DJListTrackFragment(Long startTimeMillis, Long endTimeMillis, Track track, DJList djList) {
         this.startTimeMillis = startTimeMillis;
         this.endTimeMillis = endTimeMillis;
         this.track = track;
-        this.playlist = playlist;
+        this.djList = djList;
     }
 
     public Long getId() {
@@ -64,25 +64,26 @@ public class PlaylistTrack {
         this.track = track;
     }
 
-    public Playlist getPlaylist() {
-        return playlist;
+    public DJList getPlaylist() {
+        return djList;
     }
 
-    public void setPlaylist(Playlist playlist) {
-        this.playlist = playlist;
+    public void setPlaylist(DJList djList) {
+        this.djList = djList;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PlaylistTrack that = (PlaylistTrack) o;
-        return Objects.equals(id, that.id) && Objects.equals(startTimeMillis, that.startTimeMillis) && Objects.equals(endTimeMillis, that.endTimeMillis) && Objects.equals(track, that.track) && Objects.equals(playlist, that.playlist);
+        DJListTrackFragment that = (DJListTrackFragment) o;
+        return Objects.equals(id, that.id) && Objects.equals(startTimeMillis, that.startTimeMillis)
+                && Objects.equals(endTimeMillis, that.endTimeMillis) && Objects.equals(track, that.track) && Objects.equals(djList, that.djList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, startTimeMillis, endTimeMillis, track, playlist);
+        return Objects.hash(id, startTimeMillis, endTimeMillis, track, djList);
     }
 
     @Override
@@ -92,7 +93,7 @@ public class PlaylistTrack {
                 ", startTimeMillis=" + startTimeMillis +
                 ", endTimeMillis=" + endTimeMillis +
                 ", track=" + track +
-                ", playlist=" + playlist +
+                ", DJList=" + djList +
                 '}';
     }
 }

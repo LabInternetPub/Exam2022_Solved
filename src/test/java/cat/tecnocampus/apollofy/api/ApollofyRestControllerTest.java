@@ -1,11 +1,11 @@
 package cat.tecnocampus.apollofy.api;
 
 import cat.tecnocampus.apollofy.application.UserPlayListController;
-import cat.tecnocampus.apollofy.application.dto.PlaylistTrackDTO;
-import cat.tecnocampus.apollofy.domain.PlaylistTrack;
+import cat.tecnocampus.apollofy.application.dto.DJListTrackDTO;
+import cat.tecnocampus.apollofy.domain.DJListTrackFragment;
 import cat.tecnocampus.apollofy.domain.Track;
 import cat.tecnocampus.apollofy.domain.UserFy;
-import cat.tecnocampus.apollofy.persistence.PlayListTrackRepository;
+import cat.tecnocampus.apollofy.persistence.DJListTrackFragmentRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,7 +41,7 @@ public class ApollofyRestControllerTest {
     private UserPlayListController userPlayListController;
 
     @Autowired
-    private PlayListTrackRepository playListTrackRepository;
+    private DJListTrackFragmentRepository DJListTrackFragmentRepository;
 
     @BeforeEach
     void setUp() {
@@ -70,22 +70,21 @@ public class ApollofyRestControllerTest {
     }
 
     @Test
-    // Simulate that we are executing the test being the user "mperez@tecnocampus.cat". It's a nice feature. Isn't it? :)
-    @WithMockUser(username = "mperez@tecnocampus.cat", roles = {"PROFESSIONAL"})
+    @WithMockUser(username = "jalcobe@tecnocampus.cat", roles = {"PROFESSIONAL"})
     void addTracksToPlayListWithTimeRange() throws Exception {
 
         // Create PlayTrackDTO to add two tracks to a playlist with their time range
-        final PlaylistTrackDTO track1 = new PlaylistTrackDTO(1L, 3000L, 4000L);
-        final PlaylistTrackDTO track2 = new PlaylistTrackDTO(2L, 2302L, 6789L);
+        final DJListTrackDTO track1 = new DJListTrackDTO(1L, 3000L, 4000L);
+        final DJListTrackDTO track2 = new DJListTrackDTO(2L, 2302L, 6789L);
 
-        List<PlaylistTrackDTO> playlistTrackDTOList = Arrays.asList(new PlaylistTrackDTO[]{track1, track2});
+        List<DJListTrackDTO> DJListTrackDTOList = Arrays.asList(new DJListTrackDTO[]{track1, track2});
 
         // TODO: PlaylistTrack start must be lower than end.
 
         // Convert Java DTO to JSON.
-        String body = objectMapper.writeValueAsString(playlistTrackDTOList);
+        String body = objectMapper.writeValueAsString(DJListTrackDTOList);
 
-        mockMvc.perform(post("/api/playlist/1/tracks")
+        mockMvc.perform(post("/api/djlist/1/tracks")
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON))
                 //.andExpect(status().isCreated()) It should be 201 Created as Spotify official API doc, but we use 200
@@ -94,10 +93,10 @@ public class ApollofyRestControllerTest {
 
         // Get PlaylistTracks to ensure that the tracks have been added correctly in the previous POST API call:
         // post("/api/playlist/1/tracks")
-        MvcResult result = mockMvc.perform(get("/api/playlist/1/tracks")).andExpect(status().isOk()).andReturn();
-
+        MvcResult result = mockMvc.perform(get("/api/djlist/1/tracks")).andExpect(status().isOk()).andReturn();
+        //assertTrue(result.getResponse().getContentAsString().contains("3000"));
         // Convert HTTP response body from JSON to Java
-        List<PlaylistTrack> playlistTracks = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+        List<DJListTrackFragment> DJListTrackFragments = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
         });
 
         /*
@@ -109,14 +108,14 @@ public class ApollofyRestControllerTest {
         That is why the verification code is a little more complex.
 
          */
-        assertTrue(playlistTracks.stream().anyMatch(playlistTrack -> playlistTrackEqualsDTO(playlistTrack, track1)));
-        assertTrue(playlistTracks.stream().anyMatch(playlistTrack -> playlistTrackEqualsDTO(playlistTrack, track2)));
+        assertTrue(DJListTrackFragments.stream().anyMatch(playlistTrack -> playlistTrackEqualsDTO(playlistTrack, track1)));
+        assertTrue(DJListTrackFragments.stream().anyMatch(playlistTrack -> playlistTrackEqualsDTO(playlistTrack, track2)));
     }
 
-    private static boolean playlistTrackEqualsDTO(PlaylistTrack playlistTrack, PlaylistTrackDTO trackToCheck) {
-        return playlistTrack.getTrack().getId().equals(trackToCheck.trackId()) &&
-                playlistTrack.getStartTimeMillis().equals(trackToCheck.startTimeMillis()) &&
-                playlistTrack.getEndTimeMillis().equals(trackToCheck.endTimeMillis());
+    private static boolean playlistTrackEqualsDTO(DJListTrackFragment DJListTrackFragment, DJListTrackDTO trackToCheck) {
+        return DJListTrackFragment.getTrack().getId().equals(trackToCheck.trackId()) &&
+                DJListTrackFragment.getStartTimeMillis().equals(trackToCheck.startTimeMillis()) &&
+                DJListTrackFragment.getEndTimeMillis().equals(trackToCheck.endTimeMillis());
     }
 
     // Tests for QUESTION 1

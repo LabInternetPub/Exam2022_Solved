@@ -4,7 +4,7 @@ import cat.tecnocampus.apollofy.application.GenreController;
 import cat.tecnocampus.apollofy.application.LikesController;
 import cat.tecnocampus.apollofy.application.TrackController;
 import cat.tecnocampus.apollofy.application.UserPlayListController;
-import cat.tecnocampus.apollofy.application.dto.PlaylistTrackDTO;
+import cat.tecnocampus.apollofy.application.dto.DJListTrackDTO;
 import cat.tecnocampus.apollofy.application.dto.PopularGenre;
 import cat.tecnocampus.apollofy.application.dto.PopularTrack;
 import cat.tecnocampus.apollofy.domain.*;
@@ -126,44 +126,6 @@ public class ApollofyRestController {
         userPlayListController.addTracksToPlayList(id, trackIds);
     }
 
-    /* TODO x.0
-    Implement RestController method that handles @PostMapping("/playlist/{id}/tracks") API calls to register new track
-    associations with the playlist specified as parameter.
-
-    The method receives: Principal principal, Long id, List<PlaylistTrackDTO> tracks, where:
-
-    Each PlaylistTrackDTO contains the following attributes: Long trackId, Long startTimeMillis, Long endTimeMillis
-
-    This method is in charge of receiving the information from the HTTP request and delegating it to a method of the
-    UserPlayListController Service. The service method may be named userPlayListController.addTracksToPlayListWithTimeRange
-
-    This API call is inspired by the official Spotify documentation.  The Lab Internet teaching team has added the specific
-    functionality to indicate that we want to add just a part of the track to the Playlist.
-
-    https://developer.spotify.com/documentation/web-api/reference/#/operations/add-tracks-to-playlist
-    POST method as it is done in Spotify official API.
-    */
-
-    @PostMapping("/playlist/{id}/tracks")
-    public void addTracksToPlayListWithTimeRange(Principal principal, @PathVariable Long id, @RequestBody List<PlaylistTrackDTO> tracks) {
-        userPlayListController.addTracksToPlaylistWithTimeRange(principal.getName(), id, tracks);
-    }
-
-    /* TODO x.1
-    Implement RestController method that handles @GetMapping("/playlist/{playlistId}/tracks") API calls.
-
-    This API provides the functionality to get all the associations of tracks with a playlist specified as parameter.
-
-    The method has to return List<PlaylistTrack> as expected in the JUnit test.
-
-    This method delegates to userPlayListController.getTracksByPlaylistId(playlistId),
-    which, in turn, calls the corresponding JpaRepository query to get the results.
-
-     */
-    @GetMapping("/playlist/{playlistId}/tracks")
-    public List<PlaylistTrack> getTracksToPlayListWithTimeRange(@PathVariable Long playlistId) {
-        return userPlayListController.getTracksByPlaylistId(playlistId);
-    }
 
     @PutMapping("/me/likedTracks/{id}")
     public void likeTrack(Principal principal, @PathVariable Long id) {
@@ -185,4 +147,5 @@ public class ApollofyRestController {
         System.out.println("going to return ");
         return trackController.getPopularTracks(size, from.atStartOfDay(), to.atStartOfDay());
     }
+
 }

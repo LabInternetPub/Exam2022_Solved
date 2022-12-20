@@ -60,3 +60,6 @@ insert into like_track (date, track_id, user_fy_id, liked ) values (current_time
 insert into like_track (date, track_id, user_fy_id, liked ) values (current_timestamp(), 1, 3, 1);
 insert into like_track (date, track_id, user_fy_id, liked ) values (current_timestamp(), 2, 2, 1);
 insert into like_track (date, track_id, user_fy_id, liked ) values (current_timestamp(), 2, 1, 1);
+
+insert into dj_list (title, description, owner_id) values ('The Maria DJ list', 'Selected chilly tracks', 3);
+

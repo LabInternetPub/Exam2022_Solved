@@ -1,9 +1,7 @@
 package cat.tecnocampus.apollofy.application;
 
-import cat.tecnocampus.apollofy.application.dto.PlaylistTrackDTO;
 import cat.tecnocampus.apollofy.application.exceptions.ElementNotFoundInBBDD;
 import cat.tecnocampus.apollofy.domain.Playlist;
-import cat.tecnocampus.apollofy.domain.PlaylistTrack;
 import cat.tecnocampus.apollofy.domain.Track;
 import cat.tecnocampus.apollofy.domain.UserFy;
 import cat.tecnocampus.apollofy.persistence.*;
@@ -11,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,16 +19,16 @@ public class UserPlayListController {
     private final PlayListRepository playListRepository;
     private final LikeTrackRepository likeTrackRepository;
 
-    private final PlayListTrackRepository playListTrackRepository;
+    private final DJListTrackFragmentRepository DJListTrackFragmentRepository;
 
     public UserPlayListController(TrackRepository trackRepository,
                                   UserRepository userRepository, PlayListRepository playListRepository,
-                                  LikeTrackRepository likeTrackRepository, PlayListTrackRepository playListTrackRepository) {
+                                  LikeTrackRepository likeTrackRepository, DJListTrackFragmentRepository DJListTrackFragmentRepository) {
         this.trackRepository = trackRepository;
         this.userRepository = userRepository;
         this.playListRepository = playListRepository;
         this.likeTrackRepository = likeTrackRepository;
-        this.playListTrackRepository = playListTrackRepository;
+        this.DJListTrackFragmentRepository = DJListTrackFragmentRepository;
     }
 
 
@@ -75,74 +72,4 @@ public class UserPlayListController {
         return playListRepository.findUserPlayLists(email);
     }
 
-
-    /* TODO x.3
-
-    public void addTracksToPlaylistWithTimeRange(String userEmail, Long playListId, List<PlaylistTrackDTO> tracksDTO)
-
-    This method has to verify the following constraints and implement the specified behaviour:
-
-    - The playlist with the provided identifier exists.
-    - The user with the provided identifier exists.
-    - The provided user is the owner of the playlist.
-    - For each of the PlaylistTrackDTO in "tracksDTO" parameter:
-          -you must verify that the track exists.
-          - 0 <= startTimeMillis < endTimeMillis <= track.durationSeconds
-          -in the case that the track is already associated to that playlist, then startTimeMillis and endTimeMillis
-           are updated in its corresponding PlaylistTrack object.
-          -in case the track is not associated to the playlist yet, then you must create a new PlaylistTrack object,
-           linking the track to the playlist and specifying startTimeMillis and endTimeMillis accordingly.
-
-   */
-    @Transactional
-    public void addTracksToPlaylistWithTimeRange(String email, Long playListId, List<PlaylistTrackDTO> tracksDTO) {
-        Playlist playlistDB = playListRepository.findById(playListId).orElseThrow(() -> new ElementNotFoundInBBDD("Play list doesn't exist"));
-        UserFy user = userRepository.findByEmail(email).orElseThrow(() -> new ElementNotFoundInBBDD("User " + email));
-
-        if(!playlistDB.getOwner().equals(user)) {
-            throw new RuntimeException("You are not the playlist owner.");
-        }
-
-        for (PlaylistTrackDTO playlistTrackDTO : tracksDTO) {
-            Track trackDB = trackRepository
-                    .findById(playlistTrackDTO.trackId())
-                    .orElseThrow(() -> new ElementNotFoundInBBDD("Track with id " + playlistTrackDTO.trackId()));
-
-
-            addTrackToPlaylist(playlistDB, playlistTrackDTO, trackDB);
-
-        }
-
-    }
-
-    private void addTrackToPlaylist(Playlist playlistDB, PlaylistTrackDTO playlistTrackDTO, Track trackDB) {
-        Optional<PlaylistTrack> playlistTrackOptional = playListTrackRepository.findByTrackAndPlaylist(trackDB, playlistDB);
-
-        if (playlistTrackOptional.isPresent()) {
-            PlaylistTrack playlistTrack = playlistTrackOptional.get();
-
-            playlistTrack.setStartTimeMillis(playlistTrackDTO.startTimeMillis());
-            playlistTrack.setEndTimeMillis(playlistTrackDTO.endTimeMillis());
-
-        } else {
-
-            PlaylistTrack playlistTrack = new PlaylistTrack(playlistTrackDTO.startTimeMillis(),
-                    playlistTrackDTO.endTimeMillis(),
-                    trackDB,
-                    playlistDB);
-            playListTrackRepository.save(playlistTrack);
-        }
-    }
-
-    /* TODO x.2
-
-    List<PlaylistTrack> getTracksByPlaylistId(Long playlistId)
-
-    This method is a service wrapper that just invokes the corresponding JpaRepository query to get the results,
-    to promote decoupling between the RestController and the JpaRepository.
-
-     */
-    public List<PlaylistTrack> getTracksByPlaylistId(Long playlistId) {
-        return playListTrackRepository.findByPlaylistId(playlistId);
-    }
 }

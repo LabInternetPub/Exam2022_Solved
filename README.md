@@ -15,13 +15,14 @@ The domain of the exercise is already known for you since we sent you the code, 
 * In the code you'll see **TODO**s where you need to insert new code. TODOs explain what you need to do and may contain some clues. Please,
   don't delete the TODOs from the code. TODOs are numbered according to the question number. When a question has more than one TODO they are
   numbered TODO X.1, TODO X.2 and so on, where X is the question number. There are few TODOs that don't need any code, they are there to explain code relevant to the question (and its answer)
-* **As a guide, you can execute all the calls/test in file "resources/testsShouldPass.http". Tests should pass when all questions are answered**
+* In the "resources" folder, you'll find files with the termination ".http" where you can see (and execute with Intellij http client) call examples
 
 ## Tests
-There is a suit of tests that should pass when all the questions are answered correctly
+In /test/java/cat/tecnocampus/apollofy/api, there is a suit of tests that should pass when all the questions are answered correctly
 
 ## Questions
-* **Question 1**: When a track is created, its title must begin with a capital letter and its durations must be higher or equal to 5 and lower or equal to 300
+### Question 1 
+When a track is created, its title must begin with a capital letter and its durations must be higher or equal to 5 and lower or equal to 300
     * When the parameters are valid the response status must be 200 and the body empty
     * When the parameters are invalid the response status must be 400 and the body must be similar to
   ```
@@ -38,14 +39,16 @@ There is a suit of tests that should pass when all the questions are answered co
   ]
   }
   ```
-  You may achieve this by treating the exceptions: ConstraintViolationException and MethodArgumentNotValidException
-* **Question 2**: Security
+  You may achieve this by treating the exceptions: ConstraintViolationException and MethodArgumentNotValidException  
+  There are no TODOs for this, but we solved this in the Tinder project
+
+## Question 2
   At this moment the security is configured using the JWT method, but it allows everybody to call all the API entries. Obviously, those
-  that require a logged-in user won't work if nobody is.
+  that require a logged-in user won't work if nobody is.  
   You can observe (in the data.sql file) that we have three roles. Namely, ROLE_FREE, ROLE_PREMIUM and ROLE_PROFESSIONAL. You should modify
   the security configuration so that:
     * Only registered users can call entries with the "me" word in the path
-    * Everybody can list tracks "GET /api/tracks"
+    * Everybody, even unregistered users, can list tracks "GET /api/tracks"
     * ROLE_FREE users can only: list their own information "GET /api/me", list their authored tracks "GET /api/me/tracks" and list a given track
       "GET /api/tracks/{id}"
     * ROLE_PREMIUM users additionally can: create tracks "POST /api/tracks", add artists to tracks "PUT api/tracks/{trackId}/artists",  
@@ -54,21 +57,28 @@ There is a suit of tests that should pass when all the questions are answered co
     * ROLE_PROFESSIONAL users additionally can: create, list and modify Playlists "api/me/playlists", list all users "GET /api/users" and get
       the top tracks and genres "GET /api/top/genres" "GET /api/top/tracks"
 
-* **Question 3**: When looking for a non-existing element in the database an exception of type ElementNotFoundInBBDD is signaled. In this
+## Question 3
+When looking for a non-existing element in the database an exception of type ElementNotFoundInBBDD is signaled. In this
   case the response status must be 404 and the body empty
-* TODO 4: Add a selection of users - owned tracks with a projection using interface DTO ??? (hi ha temps????)
-* **Question 5**: In the code we already have Playlists with tracks. Now, the requirements have changed, and we want Playlists to be
-a collection of fragments of tracks. More formally, a track fragment is indicated with the initial millisecond and the final millisecond. 
-Thus, we will determine the fragment of the track that we want to add to the Playlist.
 
-This API call is inspired by the official Spotify documentation.  The Lab Internet teaching team has added the specific
-functionality to indicate that we want to add just a part of the track to the Playlist.
+## Question 4 Add a selection of users - owned tracks with a projection using interface DTO ??? (hi ha temps????)
 
-https://developer.spotify.com/documentation/web-api/reference/#/operations/add-tracks-to-playlist
+## Question 5
+Our platform, Apollofy, is getting noticed and used among disc-jockeys (also known as DJ) and they would like to have lists of fragments of tracks.
+That is, the lists not only need to contain tracks but also the moment in which they should begin and end when played in the disco or musical bar.
 
-You should run the following test to check that your implementation is working correctly:
+We will call these lists **DJList**. They are going to be owned by a user, and instead of Tracks they will list **DJListTrackFragment**. Actually,
+DJListTrackFragment will play the role of an association class pointing to both a User and a Track, and containing the initial and final 
+milliseconds of the track fragment.
 
-@Test
-@WithMockUser("mperez@tecnocampus.cat")
-void addTracksToPlayListWithTimeRange() 
+Note that, conceptually, they are very similar to a Playlist but the implementation differs because we don't want DJList to 
+have a list of track fragments (DJListTrackFragment). Instead, it will be the DJListTrackFragment that will point to DJList and Track. 
+See the diagram in the blackboard.
+
+For this exercise you should implement a REST method that handles @PostMapping("/djlist/{id}/tracks") API calls to register new track
+fragments associations with the DJList specified as parameter. We assume that the DJList already exists in the database 
+(actually there is already one as you can see in the data.sql file, owned by user jalcobe@tecnocampus.cat).
+
+
+
 
