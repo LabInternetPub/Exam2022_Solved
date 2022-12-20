@@ -63,7 +63,7 @@ public class UserPlayListController {
 
     @Transactional
     public void addTracksToPlayList(Long playListId, List<Long> tracksId) {
-        Playlist playlistDB = playListRepository.findById(playListId).orElseThrow(() -> new RuntimeException("Play list doesn't exist"));
+        Playlist playlistDB = playListRepository.findById(playListId).orElseThrow(() -> new ElementNotFoundInBBDD("Play list doesn't exist"));
         tracksId.stream().map(tid -> trackRepository.findById(tid).orElseThrow(() -> new ElementNotFoundInBBDD("Track with id " + tid))).forEach(t -> playlistDB.addTrack(t));
     }
 
@@ -96,7 +96,7 @@ public class UserPlayListController {
    */
     @Transactional
     public void addTracksToPlaylistWithTimeRange(String email, Long playListId, List<PlaylistTrackDTO> tracksDTO) {
-        Playlist playlistDB = playListRepository.findById(playListId).orElseThrow(() -> new RuntimeException("Play list doesn't exist"));
+        Playlist playlistDB = playListRepository.findById(playListId).orElseThrow(() -> new ElementNotFoundInBBDD("Play list doesn't exist"));
         UserFy user = userRepository.findByEmail(email).orElseThrow(() -> new ElementNotFoundInBBDD("User " + email));
 
         if(!playlistDB.getOwner().equals(user)) {

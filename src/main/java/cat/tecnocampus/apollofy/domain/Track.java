@@ -85,6 +85,10 @@ public class Track {
         return durationSeconds;
     }
 
+    public void setDurationSeconds(Long durationSeconds) {
+        this.durationSeconds = durationSeconds;
+    }
+
     public Set<UserFy> getArtists() {
         return artists;
     }

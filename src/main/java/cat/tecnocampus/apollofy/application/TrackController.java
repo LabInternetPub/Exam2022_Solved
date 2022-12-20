@@ -62,7 +62,7 @@ public class TrackController {
     @Transactional
     public void addArtistsToTrack(Long trackId, Set<String> artistsEmail) {
         List<UserFy> artists = userRepository.findAllByEmail(new ArrayList<String>(artistsEmail));
-        Track track = trackRepository.findById(trackId).orElseThrow();
+        Track track = trackRepository.findById(trackId).orElseThrow(() -> new ElementNotFoundInBBDD("Track with id " + trackId));
         artists.forEach(a -> a.addAuthoredTrack(track));
     }
 
@@ -102,7 +102,7 @@ public class TrackController {
     }
 
     private List<String> getTrackArtistNames(Long trackId) {
-        return trackRepository.findById(trackId).orElseThrow()
+        return trackRepository.findById(trackId).orElseThrow(() -> new ElementNotFoundInBBDD("Track with id " + trackId))
                 .getArtists().stream().map(a -> a.getName()).collect(Collectors.toList());
 
     }

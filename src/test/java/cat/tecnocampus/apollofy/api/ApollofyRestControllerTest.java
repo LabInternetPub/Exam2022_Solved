@@ -3,8 +3,10 @@ package cat.tecnocampus.apollofy.api;
 import cat.tecnocampus.apollofy.application.UserPlayListController;
 import cat.tecnocampus.apollofy.application.dto.PlaylistTrackDTO;
 import cat.tecnocampus.apollofy.domain.PlaylistTrack;
+import cat.tecnocampus.apollofy.domain.Track;
 import cat.tecnocampus.apollofy.domain.UserFy;
 import cat.tecnocampus.apollofy.persistence.PlayListTrackRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,8 +25,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -58,7 +60,7 @@ public class ApollofyRestControllerTest {
     }
 
     @Test
-    @WithMockUser("jalvarez@tecnocampus.cat")
+    @WithMockUser(username = "jalvarez@tecnocampus.cat", roles = "FREE")
     void findUser() throws Exception {
         MvcResult result = mockMvc.perform(get("/api/me")).andExpect(status().isOk()).andReturn();
         UserFy userFy = objectMapper.readValue(result.getResponse().getContentAsString(), UserFy.class);
@@ -69,7 +71,7 @@ public class ApollofyRestControllerTest {
 
     @Test
     // Simulate that we are executing the test being the user "mperez@tecnocampus.cat". It's a nice feature. Isn't it? :)
-    @WithMockUser("mperez@tecnocampus.cat")
+    @WithMockUser(username = "mperez@tecnocampus.cat", roles = {"PROFESSIONAL"})
     void addTracksToPlayListWithTimeRange() throws Exception {
 
         // Create PlayTrackDTO to add two tracks to a playlist with their time range
@@ -117,4 +119,108 @@ public class ApollofyRestControllerTest {
                 playlistTrack.getEndTimeMillis().equals(trackToCheck.endTimeMillis());
     }
 
+    // Tests for QUESTION 1
+    @Test
+    @WithMockUser("un-authorized@tecnocampus.cat")
+    void unAuthorizedUserQ1() throws Exception {
+        mockMvc.perform(get("/api/tracks")).andExpect(status().isOk());
+
+        mockMvc.perform(get("/api/tracks/1")).andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/me/tracks")).andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/me")).andExpect(status().isForbidden());
+
+        String body = createTrack("Testing song", 123L);
+        mockMvc.perform(post("/api/tracks").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isForbidden());
+        mockMvc.perform(put("/api/tracks/1/artists").content("[\"jalcobe@tecnocampus.cat\"]").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isForbidden());
+        mockMvc.perform(put("/api/tracks/1/genres").content("[2,4]").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isForbidden());
+        mockMvc.perform(put("/api/me/likedTracks/1")).andExpect(status().isForbidden());
+
+        mockMvc.perform(get("/api/users")).andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/top/genres?size=3")).andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/top/tracks")).andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "jalvarez@tecnocampus.cat", roles = "FREE")
+    void freeUserQ1() throws Exception {
+        mockMvc.perform(get("/api/tracks")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/tracks/1")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/me/tracks")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/me")).andExpect(status().isOk());
+
+        String body = createTrack("Testing song", 123L);
+        mockMvc.perform(post("/api/tracks").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isForbidden());
+        mockMvc.perform(put("/api/tracks/1/artists").content("[\"jalcobe@tecnocampus.cat\"]").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isForbidden());
+        mockMvc.perform(put("/api/tracks/1/genres").content("[2,4]").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isForbidden());
+        mockMvc.perform(put("/api/me/likedTracks/1")).andExpect(status().isForbidden());
+
+        mockMvc.perform(get("/api/users")).andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/top/genres?size=3")).andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/top/tracks")).andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "mperez@tecnocampus.cat", roles = {"PREMIUM"})
+    void premiumUserQ1() throws Exception {
+        mockMvc.perform(get("/api/tracks")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/tracks/1")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/me/tracks")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/me")).andExpect(status().isOk());
+
+        String body = createTrack("Testing song", 123L);
+        mockMvc.perform(post("/api/tracks").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+        mockMvc.perform(put("/api/tracks/1/artists").content("[\"jalcobe@tecnocampus.cat\"]").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+        mockMvc.perform(put("/api/tracks/1/genres").content("[2,4]").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+        mockMvc.perform(put("/api/me/likedTracks/1")).andExpect(status().isOk());
+
+        mockMvc.perform(get("/api/users")).andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/top/genres?size=3")).andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/top/tracks")).andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "jalcobe@tecnocampus.cat", roles = {"PROFESSIONAL"})
+    void professionalUserQ1() throws Exception {
+        mockMvc.perform(get("/api/tracks")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/tracks/1")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/me/tracks")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/me")).andExpect(status().isOk());
+
+        String body = createTrack("Testing song", 123L);
+        mockMvc.perform(post("/api/tracks").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+        mockMvc.perform(put("/api/tracks/1/artists").content("[\"jalcobe@tecnocampus.cat\"]").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+        mockMvc.perform(put("/api/tracks/1/genres").content("[2,4]").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+        mockMvc.perform(put("/api/me/likedTracks/1")).andExpect(status().isOk());
+
+        mockMvc.perform(get("/api/users")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/top/genres?size=3")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/top/tracks")).andExpect(status().isOk());
+    }
+
+    private String createTrack(String title, Long duration) throws JsonProcessingException {
+        Track track = new Track();
+        track.setTitle(title);
+        track.setDurationSeconds(duration);
+        String body = objectMapper.writeValueAsString(track);
+        return body;
+    }
+
+
+    //Test for QUESTION 2
+    @Test
+    @WithMockUser(username = "jalcobe@tecnocampus.cat", roles = {"PROFESSIONAL"})
+    void malFormedTrack() throws Exception{
+        String body = createTrack("testing song", 1L);
+        MvcResult result = mockMvc.perform(post("/api/tracks").content(body).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest())
+                .andReturn();
+        assertTrue(result.getResponse().getContentAsString().contains("title"));
+        assertTrue(result.getResponse().getContentAsString().contains("durationSeconds"));
+    }
+
+    //Test for QUESTION 3
+    @Test
+    @WithMockUser(username = "jalcobe@tecnocampus.cat", roles = {"PROFESSIONAL"})
+    void nonExistingTrack() throws Exception {
+        mockMvc.perform(get("/api/tracks/1000")).andExpect(status().isNotFound());
+    }
 }

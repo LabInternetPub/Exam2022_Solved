@@ -5,6 +5,7 @@ import cat.tecnocampus.apollofy.configuration.security.jwt.JwtConfig;
 import cat.tecnocampus.apollofy.configuration.security.jwt.JwtTokenVerifierFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -29,7 +30,21 @@ public class ApplicationSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeRequests()
-                .antMatchers("**").permitAll()
+                //.antMatchers("**").permitAll()
+                .antMatchers( "/", "index", "/css/*", "/js/*", "/*.html", "/h2-console/**").permitAll()
+
+                //all
+                .antMatchers(HttpMethod.GET, "/api/tracks").permitAll()
+
+                //free
+                .antMatchers(HttpMethod.GET, "/api/me", "/api/me/tracks", "/api/tracks/*").hasAnyRole("FREE", "PREMIUM", "PROFESSIONAL")
+
+                //premium
+                .antMatchers(HttpMethod.POST, "/api/tracks").hasAnyRole("PREMIUM", "PROFESSIONAL")
+                .antMatchers("/api/tracks/*/artists", "/api/tracks/*/genres", "/api/me/likedTracks/*").hasAnyRole("PREMIUM", "PROFESSIONAL")
+
+                //professional
+                .anyRequest().hasRole("PROFESSIONAL")
 
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationProvider(), jwtConfig))

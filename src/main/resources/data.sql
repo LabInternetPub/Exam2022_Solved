@@ -20,6 +20,7 @@ insert into track (title, duration_seconds) values ('Lovesong from the mountains
 insert into user_fy (name, second_name, email, password) values ('Josep', 'Alvarez', 'jalvarez@tecnocampus.cat', '{bcrypt}$2a$10$fVKfcc47q6lrNbeXangjYeY000dmjdjkdBxEOilqhapuTO5ZH0co2');
 insert into user_fy (name, second_name, email, password) values ('Maria', 'Perez', 'mperez@tecnocampus.cat', '{bcrypt}$2a$10$fVKfcc47q6lrNbeXangjYeY000dmjdjkdBxEOilqhapuTO5ZH0co2');
 insert into user_fy (name, second_name, email, password) values ('Josep', 'Alcobe', 'jalcobe@tecnocampus.cat', '{bcrypt}$2a$10$fVKfcc47q6lrNbeXangjYeY000dmjdjkdBxEOilqhapuTO5ZH0co2');
+insert into user_fy (name, second_name, email, password) values ('un-authorized', 'Poor-gay', 'un-authorized@tecnocampus.cat', '{bcrypt}$2a$10$fVKfcc47q6lrNbeXangjYeY000dmjdjkdBxEOilqhapuTO5ZH0co2');
 
 insert into role (name) values ('ROLE_FREE');
 insert into role (name) values ('ROLE_PREMIUM');
@@ -27,6 +28,7 @@ insert into role (name) values ('ROLE_PROFESSIONAL');
 
 insert into user_roles (user_id, role_id) values (1,1);
 insert into user_roles (user_id, role_id) values (2,1);
+insert into user_roles (user_id, role_id) values (3,3);
 
 insert into track_genre (genre_id, track_id) values (9,1);
 insert into track_genre (genre_id, track_id) values (9,2);

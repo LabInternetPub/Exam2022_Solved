@@ -12,6 +12,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
@@ -36,7 +37,7 @@ public class ApollofyRestController {
     }
 
     @PostMapping("/tracks")
-    public void createTrack(@RequestBody Track track) {
+    public void createTrack(@RequestBody @Valid Track track) {
         trackController.createNewTrack(track);
     }
 
